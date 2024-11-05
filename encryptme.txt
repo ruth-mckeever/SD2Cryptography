@@ -1,1 +1,3 @@
-Super secret string that I want to encrypt.
+Cipher: A process (algorithm) by which plaintext (unencrypted data) is transformed into ciphertext (encrypted data) and vice versa.
+In classical cryptography (particularly in antiquity), the secrecy of a cipher was often central to the confidentiality of encrypted messages.
+Contemporary cryptography, by contrast, classifies ciphers as public components of the cryptographic process. See the "Concepts" handout for further information.

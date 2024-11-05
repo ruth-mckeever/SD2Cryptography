@@ -1,10 +1,6 @@
 package org.rmck;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,15 +12,15 @@ public class Main {
                 "2. Decrypt a string",
                 "3. Encrypt a file",
                 "4. Decrypt a file (with a known key)",
-                "5. Decrypt a file (brute force)"
+                "5. Decrypt a file (brute force)",
+                "6. Salt & Hash a password"
         };
 
-        //TODO: this never catches the 0 to exit the program - locate and fix the bug!
         int menuChoice = -1;
         do {
-            displayMenu(menuOptions, "Encryption Menu");
+            MenuUtil.displayMenu(menuOptions, "Encryption Menu");
             try {
-                menuChoice = getMenuChoice(menuOptions.length);
+                menuChoice = MenuUtil.getMenuChoice(menuOptions.length);
                 switch (menuChoice) {
                     case 1:
                         System.out.println("Enter String to encrypt:");
@@ -48,7 +44,32 @@ public class Main {
                         plainTextFilename = ValidationUtil.validateFileName(plainTextFilename);
                         System.out.println("Enter Key to encrypt:");
                         encryptionKey = keyboard.nextInt();
-                        encryptTextFileContents(plainTextFilename, encryptionKey);
+                        var encryptedText = EncryptionUtil.encryptTextFileContents(plainTextFilename, encryptionKey);
+                        System.out.println(encryptedText);  //TODO: write this to a new file, or back to the original file.
+                        break;
+                    case 4:
+                        System.out.println("Enter the filename:");
+                        String textFilename = keyboard.next();
+                        textFilename = ValidationUtil.validateFileName(textFilename);
+                        System.out.println("Enter Key to decrypt:");
+                        encryptionKey = keyboard.nextInt();
+                        var decryptedText = EncryptionUtil.decryptTextFileContents(textFilename, encryptionKey);
+                        System.out.println(decryptedText);
+                        break;
+                    case 5:
+                        System.out.println("Enter the filename:");
+                        String decryptFilename = keyboard.next();
+                        decryptFilename = ValidationUtil.validateFileName(decryptFilename);
+                        System.out.println("Enter known word:");
+                        String knownWord = keyboard.next();
+                        int decryptionKey = EncryptionUtil.decryptFileBruteForce(decryptFilename, knownWord);
+                        System.out.println("Decryption key found: " + decryptionKey);
+                        break;
+                    case 6:
+                        System.out.println("Enter your password");
+                        String password = keyboard.nextLine();
+                        String hashedPassword = EncryptionUtil.securePassword(password);
+                        System.out.println("Hashed password: " + hashedPassword);
                         break;
                     default:
                         break;
@@ -62,41 +83,6 @@ public class Main {
         //testBasicEncryption();
     }
 
-
-    public static void displayMenu(String[] menuOptions, String menuTitle) {
-        System.out.println(menuTitle);
-        System.out.println("Please choose from one of the following options:");
-        for (String option: menuOptions) {
-            System.out.println(option);
-        }
-    }
-
-
-
-    public static int getMenuChoice(int numItems) {
-        Scanner keyboard = new Scanner(System.in);
-        int choice = keyboard.nextInt();
-        while (choice < 1 || choice > numItems) {
-            System.out.printf("Please enter a valid option (1 - %d)\n", numItems);
-            choice = keyboard.nextInt();
-        }
-        return choice;
-    }
-
-    public static void encryptTextFileContents(String filename, int key){
-        ArrayList<String> encryptedText = new ArrayList<>();
-        File inputFile = new File(filename);
-        try {
-            Scanner fileScanner = new Scanner(inputFile);
-
-            while (fileScanner.hasNext()) {
-                encryptedText.add(EncryptionUtil.encryptShiftCipher(fileScanner.nextLine(), key));
-            }
-            System.out.println(encryptedText);  //TODO: write this to a new file, or back to the original file.
-        }  catch (FileNotFoundException ex) {
-            System.out.println("File not found");
-        }
-    }
     public static void testBasicEncryption() {
         String[] testPlaintextStrings = {
                 "very secret sentence",
