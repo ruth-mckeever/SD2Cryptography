@@ -8,8 +8,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class EncryptionUtil {
     public static final int MODULUS = 26;
@@ -93,7 +92,7 @@ public class EncryptionUtil {
 
         try {
             byte[] inputBytes = (password + salt).getBytes();
-            MessageDigest md = MessageDigest.getInstance(SHA256);
+            MessageDigest md = MessageDigest.getInstance(SHA512);
             byte[] outputBytes = md.digest(inputBytes);
             String hash = Base64.getEncoder().encodeToString(outputBytes);
             return hash;
@@ -101,7 +100,6 @@ public class EncryptionUtil {
             System.out.println("Exception - No such algorithm: " + ex);
             return "";
         }
-
     }
 
     public static String generateRandomSalt() {
