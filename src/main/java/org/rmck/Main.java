@@ -1,4 +1,5 @@
 package org.rmck;
+import java.math.BigInteger;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -13,7 +14,8 @@ public class Main {
                 "3. Encrypt a file",
                 "4. Decrypt a file (with a known key)",
                 "5. Decrypt a file (brute force)",
-                "6. Salt & Hash a password"
+                "6. Salt & Hash a password",
+                "7. Generate Diffie-Hellman Shared Private Key"
         };
 
         int menuChoice = -1;
@@ -70,6 +72,18 @@ public class Main {
                         String password = keyboard.nextLine();
                         String hashedPassword = EncryptionUtil.securePassword(password);
                         System.out.println("Hashed password: " + hashedPassword);
+                        break;
+                    case 7:
+                        System.out.println("Please enter public key generator (g):");
+                        int g = keyboard.nextInt();
+                        System.out.println("Please enter public key modulus (p):");
+                        int p = keyboard.nextInt();
+                        System.out.println("Please enter private value (a):");
+                        int a = keyboard.nextInt();
+                        System.out.println("Please enter private value (b):");
+                        int b = keyboard.nextInt();
+                        BigInteger privateKey = EncryptionUtil.generateDHPrivateValuesBig(g, p, a, b);
+                        System.out.println("Diffie-Hellman private key: " + privateKey);
                         break;
                     default:
                         break;

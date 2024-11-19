@@ -2,6 +2,8 @@ package org.rmck;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -108,6 +110,47 @@ public class EncryptionUtil {
         random.nextBytes(saltBytes);
         String salt = Base64.getEncoder().encodeToString(saltBytes);
         return salt;
+    }
+
+    //This doesn't work with the last example exercise - the numbers are too big for Int
+    public static int generateDHPrivateValues(int g, int p, int a, int b)
+    {
+        int A = (int) (Math.pow(g, a) % p);     //A = g^a mod p
+        int B = (int) (Math.pow(g, b) % p);     //B = g^b mod p
+
+        int s = (int) (Math.pow(B, a) % p);     //s = B^a mod p
+        //Calculate the private keys for both parties to make sure they are the same - otherwise something has gone wrong
+        int sTest = (int) (Math.pow(A, b) % p); //s = A^b mod p
+
+        if (s == sTest) {
+            return s;
+        }
+        else {
+            System.out.println("Something went wrong while calculating Diffie-Hellman private key");
+            return 0;
+        }
+    }
+
+
+
+
+    //Converted previous function to BigInteger to allow for the larger numbers generated in the last example exercise (worksheet 10).
+    public static BigInteger generateDHPrivateValuesBig(int g, int p, int a, int b)
+    {
+        BigInteger A = BigInteger.valueOf((long) (Math.pow(g, a) % p));     //A = g^a mod p
+        BigInteger B = BigInteger.valueOf((long) (Math.pow(g, b) % p));     //B = g^b mod p
+
+        BigInteger s = B.modPow(BigInteger.valueOf(a), BigInteger.valueOf(p));  //s = B^a mod p
+        //Calculate the private keys for both parties to make sure they are the same - otherwise something has gone wrong
+        BigInteger sTest = A.modPow(BigInteger.valueOf(b), BigInteger.valueOf(p));  //s = A^b mod p
+
+        if (s.equals(sTest)) {  //Note: == doesn't work on BigInt - you need to use .equals
+            return s;
+        }
+        else {
+            System.out.println("Something went wrong while calculating Diffie-Hellman private key");
+            return BigInteger.valueOf(0);
+        }
     }
 
 }
